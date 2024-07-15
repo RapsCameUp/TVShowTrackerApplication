@@ -1,0 +1,234 @@
+<app-header></app-header>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-sm-12 mb-4">
+      <h6 class="text-muted float-start">List Of Shows</h6>
+
+      <span class="float-end">
+        <button
+          class="float-end btn btn-sm btn-dark mt-4"
+          (click)="openAddShowModal()"
+        >
+          <i class="fa-solid fa-plus"></i> Add Show
+        </button>
+      </span>
+    </div>
+  </div>
+
+  <div *ngIf="shows.length > 0; else noShows">
+    <div class="row">
+      <div *ngFor="let show of shows" class="col-md-3 col-sm-4 mb-4">
+        <div class="card shadow-lg">
+          <div class="position-relative" (click)="openShowDetailsModal(show)">
+            <img
+              *ngIf="show.imagePath"
+              [src]="getImageUrl(show.imagePath)"
+              class="card-img-top img-fluid"
+              style="height: 180px; filter: brightness(70%)"
+              alt="{{ show.title }}"
+            />
+            <div class="card-img-overlay">
+              <h5 class="card-title text-white">{{ show.title }}</h5>
+              <p class="card-text text-white">
+                Next Episode:
+                {{ getNextEpisodeNumber(show) || "No episodes available" }}
+              </p>
+            </div>
+          </div>
+          <div class="card-body">
+            <button
+              class="btn btn-danger mt-4 btn-sm position-absolute bottom-0 start-50 translate-middle-x"
+              style="z-index: 1"
+              (click)="removeShow(show)"
+            >
+              Remove Show
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #noShows>
+    <p>You have no shows added. Please add a new show.</p>
+  </ng-template>
+</div>
+
+<!-- Add Show Modal -->
+<div
+  class="modal fade"
+  id="addShowModal"
+  tabindex="-1"
+  aria-labelledby="addShowModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addShowModalLabel">Add New Show</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form #showForm="ngForm" enctype="multipart/form-data">
+          <div class="mb-3">
+            <label for="title" class="form-label">Show Title</label>
+            <input
+              type="text"
+              class="form-control"
+              id="title"
+              name="title"
+              [(ngModel)]="newShow.title"
+              required
+              maxlength="100"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label for="showImage" class="form-label">Show Image</label>
+            <input
+              type="file"
+              id="showImage"
+              (change)="onFileSelected($event)"
+              class="form-control"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Episodes - </label>
+            <div
+              *ngFor="let episode of newShow.episodes; let i = index"
+              class="input-group mb-2"
+            >
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Episode Title"
+                name="episodeTitle{{ i }}"
+                [(ngModel)]="episode.title"
+                required
+                maxlength="100"
+              />
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Season"
+                name="episodeSeason{{ i }}"
+                [(ngModel)]="episode.season"
+                required
+                min="1"
+              />
+              <input
+                type="number"
+                class="form-control"
+                placeholder="Episode Number"
+                name="episodeNumber{{ i }}"
+                [(ngModel)]="episode.episodeNumber"
+                required
+                min="1"
+              />
+              <button
+                type="button"
+                class="btn btn-danger"
+                (click)="removeEpisode(i)"
+              >
+                Remove
+              </button>
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-dark btn-sm"
+              (click)="addEpisode()"
+            >
+              Add Episode
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="saveShow(showForm)"
+        >
+          Save Show
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Show Details Modal -->
+<div
+  class="modal fade"
+  id="showDetailsModal"
+  tabindex="-1"
+  aria-labelledby="showDetailsModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="showDetailsModalLabel">Show Details</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <h6><b>Show Title:</b> {{ selectedShow?.title }}</h6>
+        <img
+          *ngIf="selectedShow?.imagePath"
+          [src]="getImageUrl(selectedShow?.imagePath)"
+          alt="{{ selectedShow?.title }}"
+          style="width: 100px; height: 100px"
+          class="img-thumbnail mb-3"
+        />
+        <ul class="list-group">
+          <li
+            *ngFor="let episode of selectedShow?.episodes; let i = index"
+            class="list-group-item"
+            [ngClass]="{ 'list-group-item-success': isNextEpisode(i) }"
+          >
+            Season {{ episode.season }}, Episode {{ episode.episodeNumber }}:
+            {{ episode.title }}
+            <span *ngIf="episode.isWatched" class="badge bg-success float-end"
+              >Watched</span
+            >
+            <span
+              *ngIf="!episode.isWatched"
+              class="badge bg-secondary float-end"
+              >Not Watched</span
+            >
+            <button
+              *ngIf="
+                !episode.isWatched &&
+                (i === 0 || selectedShow.episodes[i - 1]?.isWatched)
+              "
+              type="button"
+              class="btn btn-dark btn-sm float-end me-2"
+              (click)="markEpisodeAsWatched(episode)"
+            >
+              Mark as Watched
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
