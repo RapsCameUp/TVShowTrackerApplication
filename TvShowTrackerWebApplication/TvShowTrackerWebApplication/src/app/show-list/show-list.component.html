@@ -25,7 +25,7 @@
               *ngIf="show.imagePath"
               [src]="getImageUrl(show.imagePath)"
               class="card-img-top img-fluid"
-              style="height: 180px; filter: brightness(70%)"
+              style="height: 180px; filter: brightness(60%)"
               alt="{{ show.title }}"
             />
             <div class="card-img-overlay">
@@ -37,13 +37,27 @@
             </div>
           </div>
           <div class="card-body">
-            <button
-              class="btn btn-danger mt-4 btn-sm position-absolute bottom-0 start-50 translate-middle-x"
-              style="z-index: 1"
-              (click)="removeShow(show)"
-            >
-              Remove Show
-            </button>
+            <div class="row">
+              <div class="col-sm-6">
+                <button
+                  class="btn btn-info mt-4 btn-sm w-100"
+                  style="z-index: 1"
+                  (click)="openShowDetailsModal(show)"
+                >
+                  View Show
+                </button>
+              </div>
+
+              <div class="col-sm-6">
+                <button
+                  class="btn btn-danger mt-4 btn-sm w-100"
+                  style="z-index: 1"
+                  (click)="removeShow(show)"
+                >
+                  Remove Show
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -216,7 +230,7 @@
                 (i === 0 || selectedShow.episodes[i - 1]?.isWatched)
               "
               type="button"
-              class="btn btn-dark btn-sm float-end me-2"
+              class="btn btn-warning btn-sm float-end me-2"
               (click)="markEpisodeAsWatched(episode)"
             >
               Mark as Watched

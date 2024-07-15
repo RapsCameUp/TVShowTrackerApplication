@@ -1,6 +1,7 @@
 export const baseUrl = {
-    //baseUrl: 'https://smtpharmserversystem.azurewebsites.net/'
-    baseUrl: 'https://localhost:7194/api',
-    imageUrl: 'https://localhost:7194'
+    baseUrl: 'https://tvshowtracker.azurewebsites.net/api',
+    //LocalBaseUrl: 'https://localhost:7194/api',
+    //LocalImageUrl: 'https://localhost:7194',
+    imageUrl: 'https://tvshowtracker.azurewebsites.net',
     // ng build --configuration=production
 };

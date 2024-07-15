@@ -5,6 +5,7 @@ import * as bootstrap from 'bootstrap';
 import { baseUrl } from '../baseurl';
 import { Episode } from '../models/episode';
 import { Show } from '../models/show';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-show-list',
@@ -28,6 +29,7 @@ export class ShowListComponent implements OnInit {
   constructor(private fb: FormBuilder, private showService: ShowService) { }
 
   ngOnInit(): void {
+
     this.loadShows();
 
     this.showDetailsModal = new bootstrap.Modal(document.getElementById('showDetailsModal')!);
@@ -65,10 +67,22 @@ export class ShowListComponent implements OnInit {
   }
 
   loadShows(): void {
+
+    Swal.fire({
+      title: 'Loading Shows',
+      text: 'Please Wait...',
+      imageUrl: './assets/Dual Ball-1s-200px.gif',
+      imageAlt: 'Loading image',
+      showCancelButton: false,
+      showConfirmButton: false,
+      showCloseButton: false,
+      showDenyButton: false,
+    });
+
     this.showService.getAllShows().subscribe(shows => {
       this.shows = shows;
 
-      console.log(this.shows);
+      Swal.close();
     });
   }
 
@@ -79,30 +93,40 @@ export class ShowListComponent implements OnInit {
   }
 
   removeShow(deleteShow: Show): void {
-    let showIdToDelete = deleteShow.id;
 
-    console.log(showIdToDelete);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "The Show will be removed.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Confirm',
+      cancelButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.value) {
 
-    this.showService.deleteShowById(showIdToDelete).subscribe(
-      () => {
-        console.log(`Show with ID ${showIdToDelete} deleted successfully.`);
-        // Handle any UI updates or navigation after successful deletion
-      },
-      (error) => {
-        console.error('Error deleting show:', error);
-        // Handle error scenarios, e.g., show a user-friendly message
+        let showIdToDelete = deleteShow._Id;
+
+        this.showService.deleteShow(showIdToDelete).subscribe(
+          () => {
+
+            Swal.fire(
+              'Deleted',
+              'Show Deleted Successfully',
+              'success'
+            ).then(() => {
+              window.location.reload();
+            });
+          },
+          (error) => {
+            console.error('Error deleting show:', error);
+            Swal.fire('Error', 'Something went wrong. Please Try Again.', 'error');
+          }
+        );
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelled', 'Process Cancelled', 'error');
       }
-    );
-  }
-
-
-  /*removeShow(id: any): void {
-    console.log(`show id below`);
-    console.log(id);
-    this.showService.deleteShow(id).subscribe(() => {
-      this.loadShows();
     });
-  }*/
+  }
 
   addEpisode(): void {
     this.newShow.episodes.push({
@@ -120,17 +144,6 @@ export class ShowListComponent implements OnInit {
     const addShowModal = new bootstrap.Modal(document.getElementById('addShowModal')!);
     addShowModal.show();
   }
-
-
-  /*saveShow(): void {
-    if (this.showForm.valid) {
-      this.showService.addShow(this.showForm.value).subscribe(() => {
-        this.loadShows();
-        const addShowModal = new bootstrap.Modal(document.getElementById('addShowModal')!);
-        addShowModal.hide();
-      });
-    }
-  }*/
 
   markEpisodeAsWatched(episode: Episode): void {
     if (!episode.isWatched) { // Check if episode is not already watched
@@ -156,6 +169,17 @@ export class ShowListComponent implements OnInit {
     if (form.valid) {
       const formData = new FormData();
       formData.append('title', this.newShow.title);
+
+      if (!this.selectedFile) {
+        Swal.fire('Warning', 'Please select Show cover image', 'warning');
+        return;
+      }
+
+      if (this.newShow.episodes.length === 0) {
+        Swal.fire('Warning', 'Please add at least one episode', 'warning');
+        return;
+      }
+
       if (this.selectedFile) {
         formData.append('imageFile', this.selectedFile);
       }
@@ -167,8 +191,17 @@ export class ShowListComponent implements OnInit {
       });
 
       this.showService.addShow(formData).subscribe(() => {
-        window.location.reload();
+        Swal.fire(
+          'Successfully Added',
+          'Show Added Successfully',
+          'success'
+        ).then(() => {
+          window.location.reload();
+        });
       });
+    }
+    else {
+      Swal.fire('Error', 'Form is not valid', 'error');
     }
   }
 
