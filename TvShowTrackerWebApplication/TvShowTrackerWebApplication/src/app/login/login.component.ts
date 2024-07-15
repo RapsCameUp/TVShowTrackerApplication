@@ -29,11 +29,14 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+
+    //check for missing fields
     if (this.loginForm.invalid) {
       Swal.fire('Warning', 'Missing Fields. Please ensure you enter username and password', 'warning');
       return;
     }
 
+    // show loader
     Swal.fire({
       title: 'Logging In',
       text: 'Please Wait...',
@@ -46,6 +49,7 @@ export class LoginComponent implements OnInit {
       allowOutsideClick: false
     });
 
+    // call api and if successful login, navigate to shows page
     this.authService.login(this.loginForm.value).subscribe(result => {
       this.router.navigate(['/shows']);
 

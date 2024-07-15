@@ -32,10 +32,12 @@ export class ShowService {
     return this.http.delete(`${this.serverUrl}/shows/${id}`);
   }
 
+  //mark an episode as watched api call
   markEpisodeAsWatched(model: any): Observable<any> {
     return this.http.post(`${this.serverUrl}/shows/markEpisodeAsWatched`, model);
   }
 
+  //api to get next episode to watch
   getNextEpisodeToWatch(userId: string, showId: string): Observable<any> {
     return this.http.get(`${this.serverUrl}/shows/${userId}/next?showId=${showId}`);
   }

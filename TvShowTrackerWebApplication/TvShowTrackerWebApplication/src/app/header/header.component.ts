@@ -14,6 +14,8 @@ export class HeaderComponent implements OnInit {
   constructor(private _router: Router, private _authService: AuthService) { }
 
   ngOnInit(): void {
+
+    // get username
     this.user_name = sessionStorage.getItem('Username');
   }
 

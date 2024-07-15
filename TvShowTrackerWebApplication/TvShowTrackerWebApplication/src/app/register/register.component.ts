@@ -36,11 +36,14 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+
+    //check for missing fields
     if (this.registerForm.invalid) {
       Swal.fire('Warning', 'Missing Fields. Please ensure there are no missing fields.', 'warning');
       return;
     }
 
+    // show page loader
     Swal.fire({
       title: 'Processing Data',
       text: 'Please wait...',
@@ -53,12 +56,7 @@ export class RegisterComponent implements OnInit {
       allowOutsideClick: false
     });
 
-    this.authService.register(this.registerForm.value).subscribe(
-      () => this.router.navigate(['/login']),
-      (err) => this.error = 'Registration failed'
-    );
-
-
+    // call API and save user details
     this.authService.register(this.registerForm.value).subscribe(result => {
       Swal.fire(
         'Registration Successful',
