@@ -1,0 +1,41 @@
+<app-header></app-header>
+
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-sm-12 mb-4">
+      <div class="row">
+        <div class="col-sm-6">
+          <input
+            class="form-control"
+            [(ngModel)]="searchTerm"
+            placeholder="Search for shows"
+          />
+        </div>
+
+        <div class="col-sm-2">
+          <button class="btn btn-dark w-100" (click)="searchShows()">
+            Search
+          </button>
+        </div>
+      </div>
+      <div *ngIf="searchResults.length === 0">
+        <p>No results found.</p>
+      </div>
+      <div class="row mt-4">
+        <div class="col-sm-3 mb-4" *ngFor="let show of searchResults">
+          <div class="card">
+            <img
+              class="card-img-top"
+              [src]="show.poster"
+              alt="{{ show.title }}"
+              style="height: 240px; object-fit: cover"
+            />
+            <div class="card-body">
+              <h6 class="card-title">{{ show.title }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

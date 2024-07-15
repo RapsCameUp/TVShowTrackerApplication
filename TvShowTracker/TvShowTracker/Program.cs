@@ -6,6 +6,7 @@ using System.Text;
 using TvShowTracker.Middleware;
 using TvShowTracker.Models;
 using TvShowTracker.Models.DbContext;
+using TvShowTracker.Models.IMDB;
 using TvShowTracker.Repository;
 using TvShowTracker.Services;
 
@@ -21,6 +22,9 @@ builder.Services.AddSingleton<TvShowContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IShowRepository, ShowRepository>();
 builder.Services.AddScoped<JwtService>();
+
+builder.Services.AddHttpClient<ImdbShowService, OmdbService>();
+builder.Services.Configure<OmdbApiSettings>(builder.Configuration.GetSection("OmdbApi"));
 
 builder.Services.AddAutoMapper(typeof(Program));
 
