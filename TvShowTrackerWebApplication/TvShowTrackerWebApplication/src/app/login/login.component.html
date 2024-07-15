@@ -1,0 +1,100 @@
+<section class="vh-100">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8 px-0 d-none d-sm-block">
+        <img
+          src="https://cdn.pixabay.com/photo/2014/10/16/09/15/lens-490806_960_720.jpg"
+          alt="Login image"
+          class="w-100 vh-100"
+          style="object-fit: cover; object-position: left"
+        />
+      </div>
+
+      <div class="col-sm-4 text-black">
+        <div class="px-5 ms-xl-4">
+          <i class="fa-solid fa-shield fa-2x me-3 pt-5 mt-xl-4"></i>
+          <span class="h6 fw-bold mb-0">TV Show Tracker Application</span>
+        </div>
+
+        <div
+          class="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-n5"
+        >
+          <form
+            style="width: 23rem"
+            [formGroup]="loginForm"
+            (ngSubmit)="onSubmit()"
+          >
+            <h6 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px">
+              Login
+            </h6>
+
+            <div class="form-outline mb-4 text-center">
+              <input
+                type="text"
+                id="username"
+                formControlName="username"
+                class="form-control form-control-lg"
+                [ngClass]="{
+                  'is-invalid':
+                    loginForm.get('username')?.touched &&
+                    loginForm.get('username')?.invalid
+                }"
+              />
+              <div
+                *ngIf="
+                  loginForm.get('username')?.touched &&
+                  loginForm.get('username')?.invalid
+                "
+                class="invalid-feedback"
+              >
+                Username is required
+              </div>
+            </div>
+
+            <div class="form-outline mb-4 text-center">
+              <input
+                type="password"
+                id="password"
+                formControlName="password"
+                class="form-control form-control-lg"
+                [ngClass]="{
+                  'is-invalid':
+                    loginForm.get('password')?.touched &&
+                    loginForm.get('password')?.invalid
+                }"
+              />
+              <label for="password" class="form-label">Password</label>
+              <div
+                *ngIf="
+                  loginForm.get('password')?.touched &&
+                  loginForm.get('password')?.invalid
+                "
+                class="invalid-feedback"
+              >
+                Password is required
+              </div>
+            </div>
+
+            <div class="pt-1 mb-4">
+              <button type="submit" class="btn btn-dark btn-lg btn-block w-100">
+                LOGIN
+              </button>
+            </div>
+
+            <p class="small mb-5 pb-lg-2">
+              <a class="text-muted" routerLink="/forgot">Forgot password?</a>
+            </p>
+            <p>
+              Don't have an account?
+              <a routerLink="/register" class="link-dark">Register here</a>
+            </p>
+
+            <div *ngIf="error" class="alert alert-danger mt-3">
+              {{ error }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
