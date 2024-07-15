@@ -12,6 +12,8 @@ import { AuthInterceptor } from './auth.interceptor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ImdbShowDetailsComponent } from './imdb-show-details/imdb-show-details.component';
+import { ShowSearchComponent } from './show-search/show-search.component';
 
 @NgModule({
   declarations: [
@@ -19,7 +21,9 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     RegisterComponent,
     LoginComponent,
     ShowListComponent,
-    HeaderComponent
+    HeaderComponent,
+    ImdbShowDetailsComponent,
+    ShowSearchComponent
   ],
   imports: [
     BrowserModule,

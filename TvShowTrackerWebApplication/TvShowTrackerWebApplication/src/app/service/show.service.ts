@@ -34,6 +34,7 @@ export class ShowService {
 
   //mark an episode as watched api call
   markEpisodeAsWatched(model: any): Observable<any> {
+    console.log(model);
     return this.http.post(`${this.serverUrl}/shows/markEpisodeAsWatched`, model);
   }
 
