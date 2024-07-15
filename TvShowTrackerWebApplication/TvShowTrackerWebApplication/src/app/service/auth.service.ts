@@ -13,10 +13,12 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  // register new user
   register(user: any): Observable<any> {
     return this.http.post(`${this.serverUrl}/user`, user);
   }
 
+  //user login and save the token
   login(credentials: any): Observable<any> {
     return this.http.post(`${this.serverUrl}/user/login`, credentials)
       .pipe(tap((response: any) => {

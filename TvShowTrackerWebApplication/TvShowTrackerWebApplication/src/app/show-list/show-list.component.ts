@@ -30,17 +30,21 @@ export class ShowListComponent implements OnInit {
 
   ngOnInit(): void {
 
+    //get all the shows
     this.loadShows();
 
+    //bootstrap modal
     this.showDetailsModal = new bootstrap.Modal(document.getElementById('showDetailsModal')!);
   }
 
+  //file selected - image upload for show
   onFileSelected(event: any): void {
     if (event.target.files.length > 0) {
       this.selectedFile = event.target.files[0];
     }
   }
 
+  //show details modal
   openShowDetailsModal(show: any): void {
     this.selectedShow = show;
     if (this.showDetailsModal) {
@@ -48,6 +52,7 @@ export class ShowListComponent implements OnInit {
     }
   }
 
+  //getting next episode
   getNextEpisodeNumber(show: any): string {
     const unwatchedEpisodes = show.episodes.filter((episode: any) => !episode.isWatched);
     if (unwatchedEpisodes.length > 0) {
@@ -68,6 +73,7 @@ export class ShowListComponent implements OnInit {
 
   loadShows(): void {
 
+    //page loader
     Swal.fire({
       title: 'Loading Shows',
       text: 'Please Wait...',
@@ -79,6 +85,7 @@ export class ShowListComponent implements OnInit {
       showDenyButton: false,
     });
 
+    // get all the shows
     this.showService.getAllShows().subscribe(shows => {
       this.shows = shows;
 
@@ -94,6 +101,7 @@ export class ShowListComponent implements OnInit {
 
   removeShow(deleteShow: Show): void {
 
+    //user should confirm delete
     Swal.fire({
       title: 'Are you sure?',
       text: "The Show will be removed.",
@@ -114,7 +122,7 @@ export class ShowListComponent implements OnInit {
               'Show Deleted Successfully',
               'success'
             ).then(() => {
-              window.location.reload();
+              window.location.reload(); //reload page
             });
           },
           (error) => {
@@ -156,10 +164,12 @@ export class ShowListComponent implements OnInit {
       this.showService.markEpisodeAsWatched(model)
         .subscribe(() => {
           console.log('Episode marked as watched successfully');
+          Swal.fire('Success', 'Episode marked as watched successfully.', 'success');
           //success
           episode.isWatched = true; // Update local episode status
         }, error => {
           console.error('Error marking episode as watched:', error);
+          Swal.fire('Error', 'Something went wrong. Please Try Again.', 'error');
         });
 
     }
@@ -184,6 +194,7 @@ export class ShowListComponent implements OnInit {
         formData.append('imageFile', this.selectedFile);
       }
 
+      // all the episodes and their properties (tile, season,..)
       this.newShow.episodes.forEach((episode: any, index: number) => {
         formData.append(`episodes[${index}].title`, episode.title);
         formData.append(`episodes[${index}].season`, episode.season.toString());
@@ -208,5 +219,4 @@ export class ShowListComponent implements OnInit {
   getImageUrl(imagePath: string): string {
     return `${this.imageUrl}/uploads/${imagePath}`;
   }
-
 }
