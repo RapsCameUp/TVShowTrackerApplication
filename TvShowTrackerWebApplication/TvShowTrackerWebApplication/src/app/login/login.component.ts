@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -27,21 +28,31 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  login() {
-    this.authService.login(this.credentials).subscribe(() => {
-      this.router.navigate(['/shows']);
-    });
-  }
-
   onSubmit() {
     if (this.loginForm.invalid) {
+      Swal.fire('Warning', 'Missing Fields. Please ensure you enter username and password', 'warning');
       return;
     }
 
-    this.authService.login(this.loginForm.value).subscribe(
-      () => this.router.navigate(['/shows']),
-      (err) => this.error = 'Invalid username or password'
-    );
+    Swal.fire({
+      title: 'Logging In',
+      text: 'Please Wait...',
+      imageUrl: './assets/Dual Ball-1s-200px.gif',
+      imageAlt: 'Loading image',
+      showCancelButton: false,
+      showConfirmButton: false,
+      showCloseButton: false,
+      showDenyButton: false,
+      allowOutsideClick: false
+    });
+
+    this.authService.login(this.loginForm.value).subscribe(result => {
+      this.router.navigate(['/shows']);
+
+    }, (error) => {
+      console.log(error);
+      Swal.fire('Error', 'Invalid password or username. Please Try Again.', 'error');
+    });
   }
 
 }

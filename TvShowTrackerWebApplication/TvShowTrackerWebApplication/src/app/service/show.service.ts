@@ -24,10 +24,6 @@ export class ShowService {
     return this.http.post(`${this.serverUrl}/shows`, formData);
   }
 
-  /*addShow(show: any): Observable<any> {
-    return this.http.post(`${this.serverUrl}/shows`, show);
-  }*/
-
   updateShow(id: string, show: any): Observable<any> {
     return this.http.put(`${this.serverUrl}/shows/${id}`, show);
   }
@@ -35,16 +31,6 @@ export class ShowService {
   deleteShow(id: any): Observable<any> {
     return this.http.delete(`${this.serverUrl}/shows/${id}`);
   }
-
-  /*deleteShowById(id: any): Observable<any> {
-    console.log(id);
-    return this.http.delete(`${this.serverUrl}/shows/delete/${id}`);
-  }*/
-
-  deleteShowById(id: any): Observable<any> {
-    return this.http.post(`${this.serverUrl}/shows/delete/${id}`, {});
-  }
-
 
   markEpisodeAsWatched(model: any): Observable<any> {
     return this.http.post(`${this.serverUrl}/shows/markEpisodeAsWatched`, model);
@@ -57,5 +43,4 @@ export class ShowService {
   getNextEpisode(showId: string): Observable<any> {
     return this.http.get<any>(`${this.serverUrl}/shows/${showId}/next`);
   }
-
 }
